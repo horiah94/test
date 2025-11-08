@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B.A.S.E. International Chat</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configure Tailwind to use Inter font -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            orange: '#F97316', // Using Tailwind's default orange-500
+                            black: '#121212',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom Styles -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Custom scrollbar for chat messages */
+        #chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        #chat-messages::-webkit-scrollbar-track {
+            background: #27272a; /* zinc-800 */
+        }
+        #chat-messages::-webkit-scrollbar-thumb {
+            background: #F97316; /* brand-orange */
+            border-radius: 3px;
+        }
+        #chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #EA580C; /* orange-600 */
+        }
+    </style>
+</head>
+<body class="bg-brand-black flex items-center justify-center min-h-screen p-4">
+
+    <!-- Chat Window -->
+    <div class="w-full max-w-lg bg-black rounded-2xl shadow-2xl flex flex-col h-[85vh] md:h-[70vh] max-h-[700px]">
+        
+        <!-- Header -->
+        <header class="bg-brand-orange text-white p-4 flex items-center space-x-4 rounded-t-2xl shadow-lg">
+            <!-- Chat Icon -->
+            <img 
+                src="Wittie (1).jpg" 
+                alt="Wittie Icon" 
+                class="w-12 h-12 rounded-full border-2 border-white"
+                onerror="this.src='https://placehold.co/48x48/FFFFFF/F97316?text=W'"
+            >
+            <!-- Title -->
+            <img 
+                src="LOGO-2 (1).png" 
+                alt="B.A.S.E. International Logo" 
+                class="h-8"
+            >
+        </header>
+        
+        <!-- Chat Messages Area -->
+        <main id="chat-messages" class="flex-1 p-4 or p-6 space-y-4 overflow-y-auto">
+            
+            <!-- Welcome Message -->
+            <div class="flex justify-start">
+                <div class="bg-brand-orange text-white p-3 rounded-2xl rounded-bl-none max-w-xs md:max-w-sm shadow">
+                    Hello! I'm Wittie, the AI guide for B.A.S.E. How can I help you today?
+                </div>
+            </div>
+            
+            <!-- More messages will be added here by JavaScript -->
+            
+        </main>
+        
+        <!-- Input Area -->
+        <footer class="p-4">
+            <form id="chat-form" class="flex items-center space-x-3">
+                <input 
+                    type="text" 
+                    id="message-input"
+                    placeholder="Type your message..."
+                    autocomplete="off"
+                    class="flex-1 bg-gray-800 text-white placeholder-gray-400 py-3 px-5 rounded-full border border-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-transparent"
+                >
+                <button 
+                    type="submit"
+                    aria-label="Send message"
+                    class="bg-brand-orange text-white p-3 rounded-full hover:bg-orange-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2 focus:ring-offset-black"
+                >
+                    <!-- Send Icon (Paper Plane) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2 .01 7z"/>
+                    </svg>
+                </button>
+            </form>
+        </footer>
+        
+    </div>
+
+    <!-- JavaScript for Chat Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatForm = document.getElementById('chat-form');
+            const messageInput = document.getElementById('message-input');
+            const chatMessages = document.getElementById('chat-messages');
+
+            // --- Function to add a message to the chat window ---
+            function addMessage(message, sender = 'user') {
+                // Create message container
+                const messageContainer = document.createElement('div');
+                messageContainer.classList.add('flex');
+                
+                // Create message bubble
+                const messageBubble = document.createElement('div');
+                messageBubble.classList.add('p-3', 'rounded-2xl', 'max-w-xs', 'md:max-w-sm', 'shadow');
+                messageBubble.textContent = message;
+
+                if (sender === 'user') {
+                    // User message
+                    messageContainer.classList.add('justify-end');
+                    messageBubble.classList.add('bg-gray-700', 'text-white', 'rounded-br-none');
+                } else {
+                    // Bot message
+                    messageContainer.classList.add('justify-start');
+                    messageBubble.classList.add('bg-brand-orange', 'text-white', 'rounded-bl-none');
+                }
+                
+                // Add bubble to container, and container to chat
+                messageContainer.appendChild(messageBubble);
+                chatMessages.appendChild(messageContainer);
+                
+                // Scroll to the bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            // --- Handle form submission ---
+            chatForm.addEventListener('submit', async (event) => {
+                event.preventDefault(); // Prevent page reload
+                
+                const userMessage = messageInput.value.trim();
+                
+                if (userMessage) {
+                    // 1. Add user's message to the chat
+                    addMessage(userMessage, 'user');
+                    
+                    // 2. Clear the input field
+                    messageInput.value = '';
+
+                    // 3. Send message to n8n and get reply
+                    const webhookUrl = 'https://hrobotna.app.n8n.cloud/webhook/https://typebot.io/api/v1/typebots/cmho8iq5h0004l504zvx80lsj/preview/startChat';
+
+                    try {
+                        // Send the user's message to the n8n webhook
+                        const response = await fetch(webhookUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ message: userMessage }) // Send message as JSON
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+
+                        // Get the reply from n8n (assuming n8n sends back JSON like: {"reply": "..."})
+                        const data = await response.json();
+                        const botReply = data.reply; // <-- تأكد أن n8n يرسل الرد بهذا المفتاح
+
+                        // Add bot's reply to the chat
+                        if (botReply) {
+                            addMessage(botReply, 'bot');
+                        } else {
+                            addMessage('Sorry, I received an empty response.', 'bot');
+                        }
+
+                    } catch (error) {
+                        console.error('Error fetching from n8n:', error);
+                        addMessage('Sorry, I am having trouble connecting. Please try again.', 'bot');
+                    }
+                    
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
