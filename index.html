@@ -542,7 +542,7 @@
             scrollToBottom();
         }
 
-        // --- ADDED: New function for streaming bot reply ---
+        // --- MODIFIED: Replaced streamBotReply function ---
         /**
          * Adds a bot message with a simulated typing effect.
          * @param {string} message - The full message text to stream.
@@ -587,14 +587,17 @@
                     return;
                 }
 
-                // Escape the HTML *before* streaming
-                const safeText = escapeHtml(message);
+                // --- THIS IS THE FIX ---
+                // We use the raw message string directly with .textContent
+                // .textContent automatically sanitizes text, so it is XSS-safe
+                // This avoids the double-escaping issue.
+                const rawText = message;
                 let index = 0;
                 const typingSpeed = 25; // Speed in ms
 
                 function typeCharacter() {
-                    if (index < safeText.length) {
-                        p.textContent += safeText.charAt(index);
+                    if (index < rawText.length) {
+                        p.textContent += rawText.charAt(index);
                         index++;
                         scrollToBottom(); // Scroll as text is added
                         setTimeout(typeCharacter, typingSpeed);
@@ -602,6 +605,7 @@
                         resolve(); // Resolve the promise when typing is done
                     }
                 }
+                // --- END FIX ---
 
                 // Start the typing animation
                 typeCharacter();
@@ -616,6 +620,7 @@
                 }, 10);
             });
         }
+        // --- END MODIFIED ---
         // --- END ADDED ---
         
         // Add typing indicator
@@ -790,85 +795,18 @@
                 // Hide typing indicator
                 hideTypingIndicator();
                 
-                // --- MODIFIED: Replaced streamBotReply function ---
-        /**
-         * Adds a bot message with a simulated typing effect.
-         * @param {string} message - The full message text to stream.
-         * @returns {Promise<void>} - A promise that resolves when streaming is complete.
-         */
-        function streamBotReply(message) {
-            return new Promise((resolve) => {
-                // Hide empty state
-                if (messagesContainer.classList.contains('hidden')) {
-                    emptyState.classList.add('hidden');
-                    messagesContainer.classList.remove('hidden');
-                    emptyState.style.display = 'none';
-                    messagesContainer.style.display = 'block';
+                // --- MODIFIED: Use streaming function ---
+                if (botReply && botReply.trim()) {
+                    const cleanedReply = cleanText(botReply);
+                    console.log('Cleaned reply:', cleanedReply); // Debug log
+                    
+                    // This will now wait for the typing to finish
+                    await streamBotReply(cleanedReply); 
+                } else {
+                    console.warn('Empty response received');
+                    addMessage('I received your message but got an empty response.', 'bot');
                 }
-
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message-fade-in flex justify-start`;
-                
-                const direction = isArabic(message) ? 'rtl' : 'ltr';
-
-                // Create the message bubble with an empty <p> tag
-                messageDiv.innerHTML = `
-                    <div class="flex items-start space-x-2 sm:space-x-3 max-w-[85%] sm:max-w-[75%]">
-                        <img 
-                            src="./assets/Wittie.jpeg" 
-                            alt="Wittie" 
-                            class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-brand-orange flex-shrink-0"
-                            onerror="this.src='https://placehold.co/32x32/F97316/FFFFFF?text=W'"
-                        >
-                        <div class="bg-brand-dark text-white rounded-2xl rounded-tl-sm px-4 sm:px-5 py-2.5 sm:py-3 border border-gray-800 shadow-lg">
-                            <p class="text-sm sm:text-base whitespace-pre-wrap break-words ${direction}"></p>
-                        </div>
-                    </div>
-                `;
-                
-                messagesContainer.appendChild(messageDiv);
-                
-                // Find the <p> tag we just created
-                const p = messageDiv.querySelector('p');
-                if (!p) {
-                    resolve();
-                    return;
-                }
-
-                // --- THIS IS THE FIX ---
-                // We use the raw message string directly with .textContent
-                // .textContent automatically sanitizes text, so it is XSS-safe
-                // This avoids the double-escaping issue.
-                const rawText = message;
-                let index = 0;
-                const typingSpeed = 25; // Speed in ms
-
-                function typeCharacter() {
-                    if (index < rawText.length) {
-                        p.textContent += rawText.charAt(index);
-                        index++;
-                        scrollToBottom(); // Scroll as text is added
-                        setTimeout(typeCharacter, typingSpeed);
-                    } else {
-                        resolve(); // Resolve the promise when typing is done
-                    }
-                }
-                // --- END FIX ---
-
-                // Start the typing animation
-                typeCharacter();
-
-                // Animate the bubble appearance
-                messageDiv.style.opacity = '0';
-                messageDiv.style.transform = 'translateY(10px)';
-                setTimeout(() => {
-                    messageDiv.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
-                    messageDiv.style.opacity = '1';
-                    messageDiv.style.transform = 'translateY(0)';
-                }, 10);
-            });
-        }
-        // --- END MODIFIED ---
+                // --- END MODIFIED ---
                 
             } catch (error) {
                 console.error('Error:', error);
