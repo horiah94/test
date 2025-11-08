@@ -5,18 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>B.A.S.E. International Chat</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- GSAP for animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <link rel="icon" href="./assets/Wittie.jpeg">
     
-    <!-- Tailwind Config -->
     <script>
         tailwind.config = {
             theme: {
@@ -37,7 +33,6 @@
         }
     </script>
     
-    <!-- Custom Styles -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
@@ -96,6 +91,17 @@
             background-clip: text;
         }
         
+        /* --- ADDED: RTL/LTR Text Direction --- */
+        .rtl {
+            direction: rtl;
+            text-align: right;
+        }
+        .ltr {
+            direction: ltr;
+            text-align: left;
+        }
+        /* --- END ADDED --- */
+
         /* Animated Background */
         .animated-bg {
             position: fixed;
@@ -234,7 +240,6 @@
 </head>
 <body class="bg-brand-black antialiased">
     
-    <!-- Animated Background -->
     <div class="animated-bg">
         <div class="bg-orb orb-1"></div>
         <div class="bg-orb orb-2"></div>
@@ -243,10 +248,8 @@
         <div class="bg-orb orb-5"></div>
     </div>
 
-    <!-- Main Container -->
     <div class="flex flex-col h-screen w-full content-wrapper">
         
-        <!-- Header -->
         <header class="px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between sticky top-0 z-10">
             <div class="flex items-center space-x-3 sm:space-x-4">
                 <img 
@@ -271,10 +274,8 @@
             </div>
         </header>
         
-        <!-- Chat Container -->
         <main id="chat-container" class="flex-1 overflow-y-auto px-4 sm:px-6">
             
-            <!-- Empty State -->
             <div id="empty-state" class="flex flex-col items-center justify-center h-full text-center px-4 py-12">
                 <div class="mb-6">
                     <i class="fas fa-comments text-6xl sm:text-7xl gradient-text"></i>
@@ -286,7 +287,6 @@
                     I'm Wittie, your AI guide for B.A.S.E. International. Ask me anything!
                 </p>
                 
-                <!-- Suggestion Cards -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 max-w-2xl w-full items-start">
                     <button class="suggestion-card text-left p-4 sm:p-5 bg-brand-dark hover:bg-gray-800 border border-gray-800 hover:border-brand-orange rounded-xl transition-all duration-200 h-full">
                         <i class="fas fa-lightbulb text-brand-orange mb-2 text-lg"></i>
@@ -296,25 +296,14 @@
                         <i class="fas fa-question-circle text-brand-orange mb-2 text-lg"></i>
                         <p class="text-white text-sm sm:text-base font-medium">How can you assist me?</p>
                     </button>
-                    <!-- <button class="suggestion-card text-left p-4 sm:p-5 bg-brand-dark hover:bg-gray-800 border border-gray-800 hover:border-brand-orange rounded-xl transition-all duration-200">
-                        <i class="fas fa-graduation-cap text-brand-orange mb-2 text-lg"></i>
-                        <p class="text-white text-sm sm:text-base font-medium">What programs do you offer?</p>
-                    </button>
-                    <button class="suggestion-card text-left p-4 sm:p-5 bg-brand-dark hover:bg-gray-800 border border-gray-800 hover:border-brand-orange rounded-xl transition-all duration-200">
-                        <i class="fas fa-envelope text-brand-orange mb-2 text-lg"></i>
-                        <p class="text-white text-sm sm:text-base font-medium">How do I get in touch?</p>
-                    </button> -->
-                </div>
+                    </div>
             </div>
             
-            <!-- Messages Container -->
             <div id="messages-container" class="hidden py-4 sm:py-6 space-y-4 sm:space-y-6 max-w-3xl mx-auto">
-                <!-- Messages will be added here -->
-            </div>
+                </div>
             
         </main>
         
-        <!-- Input Area -->
         <footer class="px-4 sm:px-6 py-2 sm:py-3">
             <div class="max-w-2xl mx-auto">
                 <form id="chat-form" class="relative">
@@ -344,7 +333,6 @@
         
     </div>
 
-    <!-- JavaScript -->
     <script>
         // Initialize GSAP
         gsap.registerPlugin();
@@ -362,6 +350,20 @@
         // Loading state
         let isLoading = false;
         
+        // --- ADDED: RTL Detection Function ---
+        /**
+         * Checks if a string contains Arabic characters.
+         * @param {string} text - The text to check.
+         * @returns {boolean} - True if Arabic, false otherwise.
+         */
+        const isArabic = (text) => {
+            if (!text) return false;
+            // This regex checks for characters in the Arabic Unicode block
+            const arabicRegex = /[\u0600-\u06FF]/;
+            return arabicRegex.test(text);
+        };
+        // --- END ADDED ---
+
         // Generate or get session key
         function getSessionKey() {
             let sessionKey = localStorage.getItem('chatSessionKey');
@@ -384,6 +386,18 @@
             
             // Enable/disable send button
             sendBtn.disabled = !this.value.trim();
+
+            // --- ADDED: RTL logic for textarea ---
+            const text = this.value;
+            // Check the first non-space character to set direction
+            if (isArabic(text.trim().charAt(0))) {
+                this.style.direction = 'rtl';
+                this.style.textAlign = 'right';
+            } else {
+                this.style.direction = 'ltr';
+                this.style.textAlign = 'left';
+            }
+            // --- END ADDED ---
         });
         
         // Handle Enter key (send on Enter, new line on Shift+Enter)
@@ -413,6 +427,11 @@
                 messageInput.style.height = 'auto';
                 messageInput.style.height = messageInput.scrollHeight + 'px';
                 sendBtn.disabled = false;
+                
+                // --- ADDED: Trigger input event to check RTL ---
+                messageInput.dispatchEvent(new Event('input'));
+                // --- END ADDED ---
+                
                 messageInput.focus();
             });
         });
@@ -439,6 +458,11 @@
             messageInput.style.height = 'auto';
             messageInput.disabled = false;
             sendBtn.disabled = true;
+
+            // --- ADDED: Reset input direction ---
+            messageInput.style.direction = 'ltr';
+            messageInput.style.textAlign = 'left';
+            // --- END ADDED ---
             
             // Reset loading state
             isLoading = false;
@@ -469,11 +493,15 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = `message-fade-in flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
             
+            // --- ADDED: Check direction ---
+            const direction = isArabic(message) ? 'rtl' : 'ltr';
+            // --- END ADDED ---
+
             if (sender === 'user') {
                 messageDiv.innerHTML = `
                     <div class="flex items-start space-x-2 sm:space-x-3 max-w-[85%] sm:max-w-[75%]">
                         <div class="bg-brand-orange text-white rounded-2xl rounded-tr-sm px-4 sm:px-5 py-2.5 sm:py-3 shadow-lg">
-                            <p class="text-sm sm:text-base whitespace-pre-wrap break-words">${escapeHtml(message)}</p>
+                            <p class="text-sm sm:text-base whitespace-pre-wrap break-words ${direction}">${escapeHtml(message)}</p>
                         </div>
                         <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gray-700 flex items-center justify-center flex-shrink-0">
                             <i class="fas fa-user text-white text-xs sm:text-sm"></i>
@@ -490,7 +518,7 @@
                             onerror="this.src='https://placehold.co/32x32/F97316/FFFFFF?text=W'"
                         >
                         <div class="bg-brand-dark text-white rounded-2xl rounded-tl-sm px-4 sm:px-5 py-2.5 sm:py-3 border border-gray-800 shadow-lg">
-                            <p class="text-sm sm:text-base whitespace-pre-wrap break-words">${escapeHtml(message)}</p>
+                            <p class="text-sm sm:text-base whitespace-pre-wrap break-words ${direction}">${escapeHtml(message)}</p>
                         </div>
                     </div>
                 `;
@@ -513,6 +541,82 @@
             // Scroll to bottom
             scrollToBottom();
         }
+
+        // --- ADDED: New function for streaming bot reply ---
+        /**
+         * Adds a bot message with a simulated typing effect.
+         * @param {string} message - The full message text to stream.
+         * @returns {Promise<void>} - A promise that resolves when streaming is complete.
+         */
+        function streamBotReply(message) {
+            return new Promise((resolve) => {
+                // Hide empty state
+                if (messagesContainer.classList.contains('hidden')) {
+                    emptyState.classList.add('hidden');
+                    messagesContainer.classList.remove('hidden');
+                    emptyState.style.display = 'none';
+                    messagesContainer.style.display = 'block';
+                }
+
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message-fade-in flex justify-start`;
+                
+                const direction = isArabic(message) ? 'rtl' : 'ltr';
+
+                // Create the message bubble with an empty <p> tag
+                messageDiv.innerHTML = `
+                    <div class="flex items-start space-x-2 sm:space-x-3 max-w-[85%] sm:max-w-[75%]">
+                        <img 
+                            src="./assets/Wittie.jpeg" 
+                            alt="Wittie" 
+                            class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-brand-orange flex-shrink-0"
+                            onerror="this.src='https://placehold.co/32x32/F97316/FFFFFF?text=W'"
+                        >
+                        <div class="bg-brand-dark text-white rounded-2xl rounded-tl-sm px-4 sm:px-5 py-2.5 sm:py-3 border border-gray-800 shadow-lg">
+                            <p class="text-sm sm:text-base whitespace-pre-wrap break-words ${direction}"></p>
+                        </div>
+                    </div>
+                `;
+                
+                messagesContainer.appendChild(messageDiv);
+                
+                // Find the <p> tag we just created
+                const p = messageDiv.querySelector('p');
+                if (!p) {
+                    resolve();
+                    return;
+                }
+
+                // Escape the HTML *before* streaming
+                const safeText = escapeHtml(message);
+                let index = 0;
+                const typingSpeed = 25; // Speed in ms
+
+                function typeCharacter() {
+                    if (index < safeText.length) {
+                        p.textContent += safeText.charAt(index);
+                        index++;
+                        scrollToBottom(); // Scroll as text is added
+                        setTimeout(typeCharacter, typingSpeed);
+                    } else {
+                        resolve(); // Resolve the promise when typing is done
+                    }
+                }
+
+                // Start the typing animation
+                typeCharacter();
+
+                // Animate the bubble appearance
+                messageDiv.style.opacity = '0';
+                messageDiv.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    messageDiv.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+                    messageDiv.style.opacity = '1';
+                    messageDiv.style.transform = 'translateY(0)';
+                }, 10);
+            });
+        }
+        // --- END ADDED ---
         
         // Add typing indicator
         function showTypingIndicator() {
@@ -629,6 +733,11 @@
             messageInput.style.height = 'auto';
             messageInput.disabled = true;
             sendBtn.disabled = true;
+
+            // --- ADDED: Reset input direction after send ---
+            messageInput.style.direction = 'ltr';
+            messageInput.style.textAlign = 'left';
+            // --- END ADDED ---
             
             // Show typing indicator
             showTypingIndicator();
@@ -681,15 +790,18 @@
                 // Hide typing indicator
                 hideTypingIndicator();
                 
-                // Clean and add bot reply
+                // --- MODIFIED: Use streaming function ---
                 if (botReply && botReply.trim()) {
                     const cleanedReply = cleanText(botReply);
                     console.log('Cleaned reply:', cleanedReply); // Debug log
-                    addMessage(cleanedReply, 'bot');
+                    
+                    // This will now wait for the typing to finish
+                    await streamBotReply(cleanedReply); 
                 } else {
                     console.warn('Empty response received');
                     addMessage('I received your message but got an empty response.', 'bot');
                 }
+                // --- END MODIFIED ---
                 
             } catch (error) {
                 console.error('Error:', error);
@@ -697,6 +809,7 @@
                 addMessage('Sorry, I am having trouble connecting. Please try again later.', 'bot');
             } finally {
                 // Reset loading state and re-enable input
+                // This now correctly waits for `await streamBotReply` to finish
                 isLoading = false;
                 messageInput.disabled = false;
                 messageInput.focus();
