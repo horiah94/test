@@ -4,21 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>B.A.S.E. International Chat</title>
-    <!-- Load Tailwind CSS -->
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Configure Tailwind to use Inter font -->
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <link rel="icon" href="./assets/Wittie.jpeg">
+    
+    <!-- Tailwind Config -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
                     },
                     colors: {
                         brand: {
-                            orange: '#F97316', // Using Tailwind's default orange-500
-                            black: '#121212',
+                            orange: '#F97316',
+                            black: '#0D0D0D',
+                            dark: '#171717',
+                            darker: '#0A0A0A',
                         }
                     }
                 }
@@ -28,172 +39,826 @@
     
     <!-- Custom Styles -->
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
-        body {
-            font-family: 'Inter', sans-serif;
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
         }
         
-        /* Custom scrollbar for chat messages */
-        #chat-messages::-webkit-scrollbar {
-            width: 6px;
+        /* Custom scrollbar */
+        #chat-container::-webkit-scrollbar {
+            width: 8px;
         }
-        #chat-messages::-webkit-scrollbar-track {
-            background: #27272a; /* zinc-800 */
+        #chat-container::-webkit-scrollbar-track {
+            background: #171717;
         }
-        #chat-messages::-webkit-scrollbar-thumb {
-            background: #F97316; /* brand-orange */
-            border-radius: 3px;
+        #chat-container::-webkit-scrollbar-thumb {
+            background: #404040;
+            border-radius: 4px;
         }
-        #chat-messages::-webkit-scrollbar-thumb:hover {
-            background: #EA580C; /* orange-600 */
+        #chat-container::-webkit-scrollbar-thumb:hover {
+            background: #525252;
+        }
+        
+        /* Typing indicator animation */
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+        
+        .typing-dot {
+            animation: typing 1.4s infinite;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        /* Smooth message appearance */
+        .message-fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Focus ring styling */
+        .focus-ring:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #F97316;
+        }
+        
+        /* Empty state gradient */
+        .gradient-text {
+            background: linear-gradient(135deg, #F97316 0%, #FB923C 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            animation: float 12s ease-in-out infinite; /* Changed from 20s to 12s */
+        }
+        
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #F97316, #FB923C);
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+        
+        .orb-2 {
+            width: 350px;
+            height: 350px;
+            background: linear-gradient(135deg, #FB923C, #FDBA74);
+            bottom: -100px;
+            right: -100px;
+            animation-delay: 5s;
+        }
+        
+        .orb-3 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #F97316, #EA580C);
+            top: 50%;
+            right: 10%;
+            animation-delay: 10s;
+        }
+        
+        .orb-4 {
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(135deg, #FDBA74, #F97316);
+            bottom: 30%;
+            left: 15%;
+            animation-delay: 3s;
+        }
+        
+        .orb-5 {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #FB923C, #EA580C);
+            top: 20%;
+            left: 50%;
+            animation-delay: 7s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.1); }
+            50% { transform: translate(-20px, 20px) scale(0.9); }
+            75% { transform: translate(20px, 30px) scale(1.05); }
+        }
+        
+        /* Particle effect */
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #F97316;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: particle-float 10s linear infinite; /* Changed from 15s to 10s */
+        }
+        
+        @keyframes particle-float {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100px) translateX(100px); opacity: 0; }
+        }
+        
+        /* Floating circles */
+        .float-circle {
+            position: absolute;
+            border: 2px solid rgba(249, 115, 22, 0.2);
+            border-radius: 50%;
+            animation: circle-float 15s ease-in-out infinite; /* Changed from 25s to 15s */
+        }
+        
+        @keyframes circle-float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.2; }
+            25% { transform: translate(50px, -50px) rotate(90deg); opacity: 0.4; }
+            50% { transform: translate(-30px, 30px) rotate(180deg); opacity: 0.2; }
+            75% { transform: translate(40px, 40px) rotate(270deg); opacity: 0.3; }
+        }
+        
+        /* Glowing dots */
+        .glow-dot {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #F97316;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #F97316, 0 0 20px #F97316;
+            animation: glow-pulse 2s ease-in-out infinite; /* Changed from 3s to 2s */
+        }
+        
+        @keyframes glow-pulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.5); }
+        }
+        
+        /* Glass morphism effect */
+        .glass-effect {
+            background: rgba(23, 23, 23, 0.7) !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(249, 115, 22, 0.1);
+        }
+        
+        /* Ensure content is above background */
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
         }
     </style>
 </head>
-<body class="bg-brand-black flex items-center justify-center min-h-screen p-4">
+<body class="bg-brand-black antialiased">
+    
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="bg-orb orb-1"></div>
+        <div class="bg-orb orb-2"></div>
+        <div class="bg-orb orb-3"></div>
+        <div class="bg-orb orb-4"></div>
+        <div class="bg-orb orb-5"></div>
+    </div>
 
-    <!-- Chat Window -->
-    <div class="w-full max-w-lg bg-black rounded-2xl shadow-2xl flex flex-col h-[85vh] md:h-[70vh] max-h-[700px]">
+    <!-- Main Container -->
+    <div class="flex flex-col h-screen w-full content-wrapper">
         
         <!-- Header -->
-        <header class="bg-brand-orange text-white p-4 flex items-center space-x-4 rounded-t-2xl shadow-lg">
-            <!-- Chat Icon -->
-            <img 
-                src="Wittie (1).jpg" 
-                alt="Wittie Icon" 
-                class="w-12 h-12 rounded-full border-2 border-white"
-                onerror="this.src='https://placehold.co/48x48/FFFFFF/F97316?text=W'"
-            >
-            <!-- Title -->
-            <img 
-                src="LOGO-2 (1).png" 
-                alt="B.A.S.E. International Logo" 
-                class="h-8"
-            >
+        <header class="px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between sticky top-0 z-10">
+            <div class="flex items-center space-x-3 sm:space-x-4">
+                <img 
+                    src="./assets/wittie.jpeg" 
+                    alt="Wittie" 
+                    class="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-brand-orange shadow-lg"
+                    onerror="this.src='https://placehold.co/40x40/F97316/FFFFFF?text=W'"
+                >
+                <div class="flex flex-col">
+                    <h1 class="text-white font-semibold text-base sm:text-lg">Wittie</h1>
+                    <p class="text-gray-400 text-xs hidden sm:block">B.A.S.E. International AI Assistant</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button 
+                    id="new-chat-btn"
+                    class="text-gray-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-gray-800"
+                    title="New Chat"
+                >
+                    <i class="fas fa-plus text-lg"></i>
+                </button>
+            </div>
         </header>
         
-        <!-- Chat Messages Area -->
-        <main id="chat-messages" class="flex-1 p-4 or p-6 space-y-4 overflow-y-auto">
+        <!-- Chat Container -->
+        <main id="chat-container" class="flex-1 overflow-y-auto px-4 sm:px-6">
             
-            <!-- Welcome Message -->
-            <div class="flex justify-start">
-                <div class="bg-brand-orange text-white p-3 rounded-2xl rounded-bl-none max-w-xs md:max-w-sm shadow">
-                    Hello! I'm Wittie, the AI guide for B.A.S.E. How can I help you today?
+            <!-- Empty State -->
+            <div id="empty-state" class="flex flex-col items-center justify-center h-full text-center px-4 py-12">
+                <div class="mb-6">
+                    <i class="fas fa-comments text-6xl sm:text-7xl gradient-text"></i>
+                </div>
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">
+                    How can I help you today?
+                </h2>
+                <p class="text-gray-400 text-sm sm:text-base max-w-md mb-8">
+                    I'm Wittie, your AI guide for B.A.S.E. International. Ask me anything!
+                </p>
+                
+                <!-- Suggestion Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 max-w-2xl w-full items-start">
+                    <button class="suggestion-card text-left p-4 sm:p-5 bg-brand-dark hover:bg-gray-800 border border-gray-800 hover:border-brand-orange rounded-xl transition-all duration-200 h-full">
+                        <i class="fas fa-lightbulb text-brand-orange mb-2 text-lg"></i>
+                        <p class="text-white text-sm sm:text-base font-medium">Tell me about B.A.S.E.</p>
+                    </button>
+                    <button class="suggestion-card text-left p-4 sm:p-5 bg-brand-dark hover:bg-gray-800 border border-gray-800 hover:border-brand-orange rounded-xl transition-all duration-200 h-full">
+                        <i class="fas fa-question-circle text-brand-orange mb-2 text-lg"></i>
+                        <p class="text-white text-sm sm:text-base font-medium">How can you assist me?</p>
+                    </button>
+                    <!-- <button class="suggestion-card text-left p-4 sm:p-5 bg-brand-dark hover:bg-gray-800 border border-gray-800 hover:border-brand-orange rounded-xl transition-all duration-200">
+                        <i class="fas fa-graduation-cap text-brand-orange mb-2 text-lg"></i>
+                        <p class="text-white text-sm sm:text-base font-medium">What programs do you offer?</p>
+                    </button>
+                    <button class="suggestion-card text-left p-4 sm:p-5 bg-brand-dark hover:bg-gray-800 border border-gray-800 hover:border-brand-orange rounded-xl transition-all duration-200">
+                        <i class="fas fa-envelope text-brand-orange mb-2 text-lg"></i>
+                        <p class="text-white text-sm sm:text-base font-medium">How do I get in touch?</p>
+                    </button> -->
                 </div>
             </div>
             
-            <!-- More messages will be added here by JavaScript -->
+            <!-- Messages Container -->
+            <div id="messages-container" class="hidden py-4 sm:py-6 space-y-4 sm:space-y-6 max-w-3xl mx-auto">
+                <!-- Messages will be added here -->
+            </div>
             
         </main>
         
         <!-- Input Area -->
-        <footer class="p-4">
-            <form id="chat-form" class="flex items-center space-x-3">
-                <input 
-                    type="text" 
-                    id="message-input"
-                    placeholder="Type your message..."
-                    autocomplete="off"
-                    class="flex-1 bg-gray-800 text-white placeholder-gray-400 py-3 px-5 rounded-full border border-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-transparent"
-                >
-                <button 
-                    type="submit"
-                    aria-label="Send message"
-                    class="bg-brand-orange text-white p-3 rounded-full hover:bg-orange-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2 focus:ring-offset-black"
-                >
-                    <!-- Send Icon (Paper Plane) -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2 .01 7z"/>
-                    </svg>
-                </button>
-            </form>
+        <footer class="px-4 sm:px-6 py-2 sm:py-3">
+            <div class="max-w-2xl mx-auto">
+                <form id="chat-form" class="relative">
+                    <div class="flex items-center space-x-3 bg-brand-darker rounded-2xl border border-gray-800 focus-within:border-brand-orange transition-colors px-4 py-2 sm:px-5 sm:py-2.5">
+                        <textarea 
+                            id="message-input"
+                            rows="1"
+                            placeholder="Message Wittie..."
+                            autocomplete="off"
+                            class="flex-1 bg-transparent text-white placeholder-gray-500 py-1.5 px-1 resize-none focus:outline-none max-h-32 text-base leading-normal"
+                        ></textarea>
+                        <button 
+                            type="submit"
+                            id="send-btn"
+                            class="bg-brand-orange text-white px-3 py-1 rounded-lg hover:bg-orange-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                            disabled
+                        >
+                            <i class="fas fa-paper-plane text-lg"></i>
+                        </button>
+                    </div>
+                    <p class="text-gray-500 text-xs mt-2 text-center hidden sm:block">
+                        Powered by AI • B.A.S.E. International
+                    </p>
+                </form>
+            </div>
         </footer>
         
     </div>
 
-    <!-- JavaScript for Chat Logic -->
+    <!-- JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const chatForm = document.getElementById('chat-form');
-            const messageInput = document.getElementById('message-input');
-            const chatMessages = document.getElementById('chat-messages');
-
-            // --- Function to add a message to the chat window ---
-            function addMessage(message, sender = 'user') {
-                // Create message container
-                const messageContainer = document.createElement('div');
-                messageContainer.classList.add('flex');
-                
-                // Create message bubble
-                const messageBubble = document.createElement('div');
-                messageBubble.classList.add('p-3', 'rounded-2xl', 'max-w-xs', 'md:max-w-sm', 'shadow');
-                messageBubble.textContent = message;
-
-                if (sender === 'user') {
-                    // User message
-                    messageContainer.classList.add('justify-end');
-                    messageBubble.classList.add('bg-gray-700', 'text-white', 'rounded-br-none');
-                } else {
-                    // Bot message
-                    messageContainer.classList.add('justify-start');
-                    messageBubble.classList.add('bg-brand-orange', 'text-white', 'rounded-bl-none');
-                }
-                 // Scroll to the bottom kjsndjsncoj
-                // Add bubble to container, and container to chat
-                messageContainer.appendChild(messageBubble);
-                chatMessages.appendChild(messageContainer);
-                
-                // Scroll to the bottom
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+        // Initialize GSAP
+        gsap.registerPlugin();
+        
+        // DOM Elements
+        const chatForm = document.getElementById('chat-form');
+        const messageInput = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-btn');
+        const emptyState = document.getElementById('empty-state');
+        const messagesContainer = document.getElementById('messages-container');
+        const chatContainer = document.getElementById('chat-container');
+        const newChatBtn = document.getElementById('new-chat-btn');
+        const suggestionCards = document.querySelectorAll('.suggestion-card');
+        
+        // Loading state
+        let isLoading = false;
+        
+        // Generate or get session key
+        function getSessionKey() {
+            let sessionKey = localStorage.getItem('chatSessionKey');
+            if (!sessionKey) {
+                // Generate a unique session key
+                sessionKey = 'session_' + Date.now() + '_' + Math.random().toString(36).substring(2, 15);
+                localStorage.setItem('chatSessionKey', sessionKey);
             }
-
-            // --- Handle form submission ---
-            chatForm.addEventListener('submit', async (event) => {
-                event.preventDefault(); // Prevent page reload
-                
-                const userMessage = messageInput.value.trim();
-                
-                if (userMessage) {
-                    // 1. Add user's message to the chat
-                    addMessage(userMessage, 'user');
-                    
-                    // 2. Clear the input field
-                    messageInput.value = '';
-
-                    // 3. Send message to n8n and get reply
-                    const webhookUrl = 'https://hrobotna.app.n8n.cloud/webhook/651ca324-326a-43e3-ad8e-876b422777b6';
-
-                    try {
-                        // Send the user's message to the n8n webhook
-                        const response = await fetch(webhookUrl, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ message: userMessage }) // Send message as JSON
-                        });
-
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-
-                        // Get the reply from n8n (assuming n8n sends back JSON like: {"reply": "..."})
-                        const data = await response.json();
-                        const botReply = data.reply; // <-- تأكد أن n8n يرسل الرد بهذا المفتاح
-
-                        // Add bot's reply to the chat
-                        if (botReply) {
-                            addMessage(botReply, 'bot');
-                        } else {
-                            addMessage('Sorry, I received an empty response.', 'bot');
-                        }
-
-                    } catch (error) {
-                        console.error('Error fetching from n8n:', error);
-                        addMessage('Sorry, I am having trouble connecting. Please try again.', 'bot');
-                    }
-                    
+            return sessionKey;
+        }
+        
+        // Get session key on load (using let so it can be reassigned)
+        let sessionKey = getSessionKey();
+        console.log('Session Key:', sessionKey); // Debug log
+        
+        // Auto-resize textarea
+        messageInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 128) + 'px';
+            
+            // Enable/disable send button
+            sendBtn.disabled = !this.value.trim();
+        });
+        
+        // Handle Enter key (send on Enter, new line on Shift+Enter)
+        messageInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (this.value.trim()) {
+                    chatForm.dispatchEvent(new Event('submit'));
                 }
+            }
+        });
+        
+        // Animate suggestion cards on load
+        gsap.from('.suggestion-card', {
+            opacity: 0,
+            y: 20,
+            duration: 0.5,
+            stagger: 0.05,
+            ease: 'power2.out'
+        });
+        
+        // Handle suggestion card clicks
+        suggestionCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const text = this.querySelector('p').textContent;
+                messageInput.value = text;
+                messageInput.style.height = 'auto';
+                messageInput.style.height = messageInput.scrollHeight + 'px';
+                sendBtn.disabled = false;
+                messageInput.focus();
+            });
+        });
+        
+        // New chat button
+        newChatBtn.addEventListener('click', function() {
+            // Generate new session key for new chat
+            const newSessionKey = 'session_' + Date.now() + '_' + Math.random().toString(36).substring(2, 15);
+            localStorage.setItem('chatSessionKey', newSessionKey);
+            sessionKey = newSessionKey;
+            console.log('New Session Key:', sessionKey); // Debug log
+            
+            // Clear messages
+            messagesContainer.innerHTML = '';
+            messagesContainer.classList.add('hidden');
+            messagesContainer.style.display = 'none';
+            
+            // Show empty state
+            emptyState.classList.remove('hidden');
+            emptyState.style.display = 'flex';
+            
+            // Clear and reset input
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            messageInput.disabled = false;
+            sendBtn.disabled = true;
+            
+            // Reset loading state
+            isLoading = false;
+            
+            // Scroll to top
+            chatContainer.scrollTop = 0;
+            
+            // Re-animate the empty state
+            gsap.fromTo(emptyState, 
+                { opacity: 0, y: 20 },
+                { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }
+            );
+        });
+        
+        // Add message function
+        function addMessage(message, sender = 'user') {
+            console.log('addMessage called:', { message, sender }); // Debug log
+            
+            // Hide empty state on first message
+            if (messagesContainer.classList.contains('hidden')) {
+                console.log('Showing messages container'); // Debug log
+                emptyState.classList.add('hidden');
+                messagesContainer.classList.remove('hidden');
+                emptyState.style.display = 'none'; // Force hide
+                messagesContainer.style.display = 'block'; // Force show
+            }
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message-fade-in flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+            
+            if (sender === 'user') {
+                messageDiv.innerHTML = `
+                    <div class="flex items-start space-x-2 sm:space-x-3 max-w-[85%] sm:max-w-[75%]">
+                        <div class="bg-brand-orange text-white rounded-2xl rounded-tr-sm px-4 sm:px-5 py-2.5 sm:py-3 shadow-lg">
+                            <p class="text-sm sm:text-base whitespace-pre-wrap break-words">${escapeHtml(message)}</p>
+                        </div>
+                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gray-700 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-user text-white text-xs sm:text-sm"></i>
+                        </div>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="flex items-start space-x-2 sm:space-x-3 max-w-[85%] sm:max-w-[75%]">
+                        <img 
+                            src="./assets/wittie.jpeg" 
+                            alt="Wittie" 
+                            class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-brand-orange flex-shrink-0"
+                            onerror="this.src='https://placehold.co/32x32/F97316/FFFFFF?text=W'"
+                        >
+                        <div class="bg-brand-dark text-white rounded-2xl rounded-tl-sm px-4 sm:px-5 py-2.5 sm:py-3 border border-gray-800 shadow-lg">
+                            <p class="text-sm sm:text-base whitespace-pre-wrap break-words">${escapeHtml(message)}</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            messagesContainer.appendChild(messageDiv);
+            console.log('Message appended to container'); // Debug log
+            
+            // Simple opacity animation without GSAP (less likely to cause issues)
+            messageDiv.style.opacity = '0';
+            messageDiv.style.transform = 'translateY(10px)';
+            
+            // Use setTimeout to ensure the element is rendered before animating
+            setTimeout(() => {
+                messageDiv.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+                messageDiv.style.opacity = '1';
+                messageDiv.style.transform = 'translateY(0)';
+            }, 10);
+            
+            // Scroll to bottom
+            scrollToBottom();
+        }
+        
+        // Add typing indicator
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typing-indicator';
+            typingDiv.className = 'flex items-start space-x-2 sm:space-x-3';
+            typingDiv.innerHTML = `
+                <img 
+                    src="./assets/wittie.jpeg" 
+                    alt="Wittie" 
+                    class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-brand-orange flex-shrink-0"
+                    onerror="this.src='https://placehold.co/32x32/F97316/FFFFFF?text=W'"
+                >
+                <div class="bg-brand-dark rounded-2xl rounded-tl-sm px-5 sm:px-6 py-3 sm:py-4 border border-gray-800">
+                    <div class="flex space-x-1.5">
+                        <div class="w-2 h-2 bg-gray-500 rounded-full typing-dot"></div>
+                        <div class="w-2 h-2 bg-gray-500 rounded-full typing-dot"></div>
+                        <div class="w-2 h-2 bg-gray-500 rounded-full typing-dot"></div>
+                    </div>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(typingDiv);
+            scrollToBottom();
+        }
+        
+        // Remove typing indicator
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        // Scroll to bottom smoothly
+        function scrollToBottom() {
+            gsap.to(chatContainer, {
+                scrollTop: chatContainer.scrollHeight,
+                duration: 0.5,
+                ease: 'power2.out'
+            });
+        }
+        
+        // Clean output text from formatting characters
+        function cleanText(text) {
+            if (!text) return '';
+            
+            // Convert to string if not already
+            text = String(text);
+            
+            // Remove escape characters and special formatting
+            text = text
+                // Remove escape sequences like \n, \r, \t, \\
+                .replace(/\\n/g, '\n')  // Convert \n to actual newlines
+                .replace(/\\r/g, '')     // Remove carriage returns
+                .replace(/\\t/g, ' ')    // Convert tabs to spaces
+                .replace(/\\\\/g, '')    // Remove escaped backslashes
+                .replace(/\\"/g, '"')    // Convert escaped quotes to regular quotes
+                .replace(/\\'/g, "'")    // Convert escaped single quotes
+                
+                // Remove markdown asterisks (bold/italic)
+                .replace(/\*\*\*/g, '')  // Remove triple asterisks
+                .replace(/\*\*/g, '')    // Remove double asterisks (bold)
+                .replace(/\*/g, '')      // Remove single asterisks (italic)
+                
+                // Remove other common formatting characters
+                .replace(/_{2,}/g, '')   // Remove multiple underscores
+                .replace(/`{1,3}/g, '')  // Remove backticks (code blocks)
+                .replace(/~/g, '')       // Remove tildes
+                
+                // Clean up extra whitespace
+                .replace(/[ \t]+/g, ' ') // Multiple spaces/tabs to single space
+                .trim();                 // Trim leading/trailing whitespace
+            
+            return text;
+        }
+        
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            if (!text) return '';
+            // Convert to string if it's not already
+            text = String(text);
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+        
+        // Handle form submission
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const userMessage = messageInput.value.trim();
+            if (!userMessage) return;
+            
+            // Prevent sending while loading
+            if (isLoading) {
+                console.log('Already loading, please wait...'); // Debug log
+                return;
+            }
+            
+            // Set loading state
+            isLoading = true;
+            
+            // Add user message
+            addMessage(userMessage, 'user');
+            
+            // Clear input and disable
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            messageInput.disabled = true;
+            sendBtn.disabled = true;
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            // Send to n8n webhook
+            const webhookUrl = 'https://n8n.aurorateq.com/webhook/test';
+            
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        message: userMessage,
+                        sessionKey: sessionKey
+                    })
+                });
+                
+                // Check if response is ok
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                // Get response as text first
+                const responseText = await response.text();
+                console.log('Webhook response (text):', responseText); // Debug log
+                
+                let botReply = responseText;
+                
+                // Try to parse as JSON if possible
+                try {
+                    const data = JSON.parse(responseText);
+                    console.log('Parsed as JSON:', data); // Debug log
+                    
+                    // n8n often returns an array, get the first item
+                    let jsonData = data;
+                    if (Array.isArray(data) && data.length > 0) {
+                        jsonData = data[0];
+                    }
+                    
+                    // Try different possible response formats from n8n
+                    botReply = jsonData.output || jsonData.reply || jsonData.response || jsonData.text || jsonData.result || jsonData.message || responseText;
+                } catch (jsonError) {
+                    // If not JSON, use the text response directly
+                    console.log('Response is plain text, not JSON'); // Debug log
+                    botReply = responseText;
+                }
+                
+                // Hide typing indicator
+                hideTypingIndicator();
+                
+                // Clean and add bot reply
+                if (botReply && botReply.trim()) {
+                    const cleanedReply = cleanText(botReply);
+                    console.log('Cleaned reply:', cleanedReply); // Debug log
+                    addMessage(cleanedReply, 'bot');
+                } else {
+                    console.warn('Empty response received');
+                    addMessage('I received your message but got an empty response.', 'bot');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                hideTypingIndicator();
+                addMessage('Sorry, I am having trouble connecting. Please try again later.', 'bot');
+            } finally {
+                // Reset loading state and re-enable input
+                isLoading = false;
+                messageInput.disabled = false;
+                messageInput.focus();
+            }
+        });
+        
+        // Initial animations
+        gsap.from('#empty-state', {
+            opacity: 0,
+            y: 30,
+            duration: 0.8,
+            ease: 'power2.out'
+        });
+        
+        // Animate header on load
+        gsap.from('header', {
+            y: -100,
+            opacity: 0,
+            duration: 0.6,
+            ease: 'power3.out'
+        });
+        
+        // Animate footer on load
+        gsap.from('footer', {
+            y: 100,
+            opacity: 0,
+            duration: 0.6,
+            ease: 'power3.out',
+            delay: 0.2
+        });
+        
+        // Animate new chat button on hover
+        newChatBtn.addEventListener('mouseenter', () => {
+            gsap.to(newChatBtn, {
+                scale: 1.1,
+                rotation: 90,
+                duration: 0.3,
+                ease: 'back.out'
+            });
+        });
+        
+        newChatBtn.addEventListener('mouseleave', () => {
+            gsap.to(newChatBtn, {
+                scale: 1,
+                rotation: 0,
+                duration: 0.3,
+                ease: 'back.out'
+            });
+        });
+        
+        // Animate send button on hover
+        sendBtn.addEventListener('mouseenter', () => {
+            if (!sendBtn.disabled) {
+                gsap.to(sendBtn.querySelector('i'), {
+                    x: 3,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            }
+        });
+        
+        sendBtn.addEventListener('mouseleave', () => {
+            gsap.to(sendBtn.querySelector('i'), {
+                x: 0,
+                duration: 0.3,
+                ease: 'power2.out'
+            });
+        });
+        
+        // Create floating particles
+        function createParticles() {
+            const particleContainer = document.querySelector('.animated-bg');
+            const particleCount = 40; // Increased from 20
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (8 + Math.random() * 7) + 's'; // Faster: 8-15s instead of 15-25s
+                particleContainer.appendChild(particle);
+            }
+        }
+        
+        // Create floating circles
+        function createFloatingCircles() {
+            const particleContainer = document.querySelector('.animated-bg');
+            const circleCount = 8;
+            
+            for (let i = 0; i < circleCount; i++) {
+                const circle = document.createElement('div');
+                circle.className = 'float-circle';
+                const size = 50 + Math.random() * 150;
+                circle.style.width = size + 'px';
+                circle.style.height = size + 'px';
+                circle.style.left = Math.random() * 100 + '%';
+                circle.style.top = Math.random() * 100 + '%';
+                circle.style.animationDelay = Math.random() * 15 + 's';
+                circle.style.animationDuration = (12 + Math.random() * 10) + 's'; // Faster: 12-22s instead of 20-35s
+                particleContainer.appendChild(circle);
+            }
+        }
+        
+        // Create glowing dots
+        function createGlowingDots() {
+            const particleContainer = document.querySelector('.animated-bg');
+            const dotCount = 15;
+            
+            for (let i = 0; i < dotCount; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'glow-dot';
+                dot.style.left = Math.random() * 100 + '%';
+                dot.style.top = Math.random() * 100 + '%';
+                dot.style.animationDelay = Math.random() * 2 + 's';
+                dot.style.animationDuration = (1.5 + Math.random() * 2) + 's'; // Faster: 1.5-3.5s instead of 2-5s
+                particleContainer.appendChild(dot);
+            }
+        }
+        
+        // Initialize all background animations
+        createParticles();
+        createFloatingCircles();
+        createGlowingDots();
+        
+        // Pulse animation for suggestion cards on hover
+        document.querySelectorAll('.suggestion-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                gsap.to(this, {
+                    scale: 1.02,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+                gsap.to(this.querySelector('i'), {
+                    rotation: 360,
+                    duration: 0.5,
+                    ease: 'power2.inOut'
+                });
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                gsap.to(this, {
+                    scale: 1,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+        });
+        
+        // Smooth focus animation for textarea
+        messageInput.addEventListener('focus', () => {
+            gsap.to(messageInput.parentElement, {
+                scale: 1.01,
+                duration: 0.2,
+                ease: 'power2.out'
+            });
+        });
+        
+        messageInput.addEventListener('blur', () => {
+            gsap.to(messageInput.parentElement, {
+                scale: 1,
+                duration: 0.2,
+                ease: 'power2.out'
             });
         });
     </script>
