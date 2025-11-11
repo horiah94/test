@@ -1,16 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>B.A.S.E. International Chat</title>
+    <title>مرشد - منتج مقدّم من مجتمع ن8ن بالعربي</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
     <link rel="icon" href="./assets/Wittie.jpeg">
     
     <script>
@@ -18,14 +15,15 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        sans: ['Cairo', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
                     },
                     colors: {
                         brand: {
-                            orange: '#F97316',
-                            black: '#0D0D0D',
-                            dark: '#171717',
-                            darker: '#0A0A0A',
+                            'light-blue': '#e0e7ff', 
+                            'navy': '#1e3a8a', 
+                            'navy-light': '#3b82f6',
+                            'light-navy': '#dbeafe',
+                            'dark-navy': '#1e293b'
                         }
                     }
                 }
@@ -34,138 +32,57 @@
     </script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap');
         
         * {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
         }
         
-        /* Custom scrollbar */
-        #chat-container::-webkit-scrollbar {
-            width: 8px;
-        }
-        #chat-container::-webkit-scrollbar-track {
-            background: #171717;
-        }
-        #chat-container::-webkit-scrollbar-thumb {
-            background: #404040;
-            border-radius: 4px;
-        }
-        #chat-container::-webkit-scrollbar-thumb:hover {
-            background: #525252;
-        }
+        #chat-container::-webkit-scrollbar { width: 8px; }
+        #chat-container::-webkit-scrollbar-track { background: #1e3a8a; }
+        #chat-container::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+        #chat-container::-webkit-scrollbar-thumb:hover { background: #2563eb; }
         
-        /* Typing indicator animation */
-        @keyframes typing {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-10px); }
-        }
-        
-        .typing-dot {
-            animation: typing 1.4s infinite;
-        }
+        @keyframes typing { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-10px); } }
+        .typing-dot { animation: typing 1.4s infinite; }
         .typing-dot:nth-child(2) { animation-delay: 0.2s; }
         .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-        
-        /* Smooth message appearance */
-        .message-fade-in {
-            animation: fadeIn 0.3s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Focus ring styling */
+        .message-fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         .focus-ring:focus {
             outline: none;
-            box-shadow: 0 0 0 2px #F97316;
+            box-shadow: 0 0 0 2px #e0e7ff;
         }
         
-        /* Empty state gradient */
         .gradient-text {
-            background: linear-gradient(135deg, #F97316 0%, #FB923C 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #e0e7ff 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
         
-        /* --- ADDED: RTL/LTR Text Direction --- */
-        .rtl {
-            direction: rtl;
-            text-align: right;
-        }
-        .ltr {
-            direction: ltr;
-            text-align: left;
-        }
-        /* --- END ADDED --- */
+        .rtl { direction: rtl; text-align: right; }
+        .ltr { direction: ltr; text-align: left; }
 
-        /* Animated Background */
         .animated-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            overflow: hidden;
-            pointer-events: none;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0; overflow: hidden; pointer-events: none;
         }
         
         .bg-orb {
-            position: absolute;
-            border-radius: 50%;
+            position: absolute; border-radius: 50%;
             filter: blur(80px);
-            opacity: 0.15;
-            animation: float 12s ease-in-out infinite; /* Changed from 20s to 12s */
+            opacity: 0.35;
+            animation: float 12s ease-in-out infinite;
         }
         
-        .orb-1 {
-            width: 400px;
-            height: 400px;
-            background: linear-gradient(135deg, #F97316, #FB923C);
-            top: -100px;
-            left: -100px;
-            animation-delay: 0s;
-        }
-        
-        .orb-2 {
-            width: 350px;
-            height: 350px;
-            background: linear-gradient(135deg, #FB923C, #FDBA74);
-            bottom: -100px;
-            right: -100px;
-            animation-delay: 5s;
-        }
-        
-        .orb-3 {
-            width: 300px;
-            height: 300px;
-            background: linear-gradient(135deg, #F97316, #EA580C);
-            top: 50%;
-            right: 10%;
-            animation-delay: 10s;
-        }
-        
-        .orb-4 {
-            width: 250px;
-            height: 250px;
-            background: linear-gradient(135deg, #FDBA74, #F97316);
-            bottom: 30%;
-            left: 15%;
-            animation-delay: 3s;
-        }
-        
-        .orb-5 {
-            width: 200px;
-            height: 200px;
-            background: linear-gradient(135deg, #FB923C, #EA580C);
-            top: 20%;
-            left: 50%;
-            animation-delay: 7s;
-        }
+        .orb-1 { width: 400px; height: 400px; background: linear-gradient(135deg, #1e3a8a, #3b82f6); top: -100px; left: -100px; animation-delay: 0s; }
+        .orb-2 { width: 350px; height: 350px; background: linear-gradient(135deg, #3b82f6, #2563eb); bottom: -100px; right: -100px; animation-delay: 5s; }
+        .orb-3 { width: 300px; height: 300px; background: linear-gradient(135deg, #1e3a8a, #60a5fa); top: 50%; right: 10%; animation-delay: 10s; }
+        .orb-4 { width: 250px; height: 250px; background: linear-gradient(135deg, #60a5fa, #e0e7ff); bottom: 30%; left: 15%; animation-delay: 3s; }
+        .orb-5 { width: 200px; height: 200px; background: linear-gradient(135deg, #3b82f6, #1e3a8a); top: 20%; left: 50%; animation-delay: 7s; }
         
         @keyframes float {
             0%, 100% { transform: translate(0, 0) scale(1); }
@@ -174,71 +91,63 @@
             75% { transform: translate(20px, 30px) scale(1.05); }
         }
         
-        /* Particle effect */
         .particle {
             position: absolute;
-            width: 2px;
-            height: 2px;
-            background: #F97316;
+            width: 3px; height: 3px;
+            background: #3b82f6;
             border-radius: 50%;
-            opacity: 0.3;
-            animation: particle-float 10s linear infinite; /* Changed from 15s to 10s */
+            opacity: 0.6;
+            animation: particle-float 10s linear infinite;
         }
         
         @keyframes particle-float {
             0% { transform: translateY(100vh) translateX(0); opacity: 0; }
-            10% { opacity: 0.3; }
-            90% { opacity: 0.3; }
+            10% { opacity: 0.6; } 90% { opacity: 0.6; }
             100% { transform: translateY(-100px) translateX(100px); opacity: 0; }
         }
         
-        /* Floating circles */
         .float-circle {
             position: absolute;
-            border: 2px solid rgba(249, 115, 22, 0.2);
+            border: 2px solid rgba(59, 130, 246, 0.4);
             border-radius: 50%;
-            animation: circle-float 15s ease-in-out infinite; /* Changed from 25s to 15s */
+            animation: circle-float 15s ease-in-out infinite;
         }
         
         @keyframes circle-float {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.2; }
-            25% { transform: translate(50px, -50px) rotate(90deg); opacity: 0.4; }
-            50% { transform: translate(-30px, 30px) rotate(180deg); opacity: 0.2; }
-            75% { transform: translate(40px, 40px) rotate(270deg); opacity: 0.3; }
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.3; }
+            25% { transform: translate(50px, -50px) rotate(90deg); opacity: 0.6; }
+            50% { transform: translate(-30px, 30px) rotate(180deg); opacity: 0.3; }
+            75% { transform: translate(40px, 40px) rotate(270deg); opacity: 0.5; }
         }
         
-        /* Glowing dots */
         .glow-dot {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #F97316;
+            position: absolute; width: 4px; height: 4px;
+            background: #3b82f6;
             border-radius: 50%;
-            box-shadow: 0 0 10px #F97316, 0 0 20px #F97316;
-            animation: glow-pulse 2s ease-in-out infinite; /* Changed from 3s to 2s */
+            box-shadow: 0 0 15px #3b82f6, 0 0 30px #3b82f6;
+            animation: glow-pulse 2s ease-in-out infinite;
         }
         
         @keyframes glow-pulse {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.5); }
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 1.0; transform: scale(1.5); }
         }
         
-        /* Glass morphism effect */
         .glass-effect {
-            background: rgba(23, 23, 23, 0.7) !important;
+            background: rgba(30, 58, 138, 0.7) !important;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(249, 115, 22, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.1);
         }
         
-        /* Ensure content is above background */
-        .content-wrapper {
-            position: relative;
-            z-index: 1;
+        .content-wrapper { position: relative; z-index: 1; }
+        
+        .career-path-bg {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.8) 0%, rgba(59, 130, 246, 0.1) 100%);
         }
     </style>
 </head>
-<body class="bg-brand-black antialiased">
+<body class="bg-brand-navy antialiased">
     
     <div class="animated-bg">
         <div class="bg-orb orb-1"></div>
@@ -252,22 +161,35 @@
         
         <header class="px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between sticky top-0 z-10">
             <div class="flex items-center space-x-3 sm:space-x-4">
-                <img 
-                    src="./assets/Wittie.jpeg" 
-                    alt="Wittie" 
-                    class="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-brand-orange shadow-lg"
-                    onerror="this.src='https://placehold.co/40x40/F97316/FFFFFF?text=W'"
-                >
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-brand-navy-light flex items-center justify-center shadow-lg">
+                    <i class="fas fa-compass text-white text-lg sm:text-xl"></i>
+                </div>
                 <div class="flex flex-col">
-                    <h1 class="text-white font-semibold text-base sm:text-lg">Wittie</h1>
-                    <p class="text-gray-400 text-xs hidden sm:block">B.A.S.E. International AI Assistant</p>
+                    <h1 class="text-white font-semibold text-base sm:text-lg">مُرشد</h1>
+                    <p class="text-gray-400 text-xs hidden sm:block">مرشدك المهني • مجتمع ن8ن بالعربي</p>
                 </div>
             </div>
             <div class="flex items-center space-x-2">
+                <a 
+                    href="https://www.skool.com/n8n-with-huria-4282/about?ref=7aa0261b38464919ab28154488397fd6" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="flex items-center space-x-2 bg-gradient-to-r from-brand-navy-light/20 to-brand-light-blue/20 hover:from-brand-navy-light/30 hover:to-brand-light-blue/30 backdrop-blur-sm rounded-lg px-3 py-2 transition-all duration-200 group border border-white/10 hover:border-white/20"
+                    title="مجتمع ن8ن بالعربي"
+                >
+                    <div class="flex items-center justify-center w-8 h-8">
+                        <div class="text-center leading-none">
+                            <div class="text-sm font-bold text-white mb-0.5">U8U</div>
+                            <div class="text-[7px] text-white/80 leading-tight">مجتمع</div>
+                            <div class="text-[7px] text-white/80 leading-tight">الشباب</div>
+                        </div>
+                    </div>
+                    <i class="fas fa-external-link-alt text-white/60 group-hover:text-white transition-colors text-xs"></i>
+                </a>
                 <button 
                     id="new-chat-btn"
                     class="text-gray-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-gray-800"
-                    title="New Chat"
+                    title="محادثة جديدة"
                 >
                     <i class="fas fa-plus text-lg"></i>
                 </button>
@@ -278,25 +200,47 @@
             
             <div id="empty-state" class="flex flex-col items-center justify-center h-full text-center px-4 py-12">
                 <div class="mb-6">
-                    <i class="fas fa-comments text-6xl sm:text-7xl gradient-text"></i>
+                    <i class="fas fa-compass text-6xl sm:text-7xl gradient-text"></i>
                 </div>
                 <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">
-                    How can I help you today?
+                    مستعد لبدء مسيرتك المهنية؟
                 </h2>
-                <p class="text-gray-400 text-sm sm:text-base max-w-md mb-8">
-                    I'm Wittie, your AI guide for B.A.S.E. International. Ask me anything!
+                <p class="text-gray-400 text-sm sm:text-base max-w-md mb-6">
+                    أنا مرشد، مساعدك المهني. متخصص في مساعدة الطلاب والخريجين لإيجاد مسارهم الوظيفي.
                 </p>
+                <div class="bg-brand-navy-light/20 backdrop-blur-sm rounded-lg px-4 py-2 mb-6 border border-brand-navy-light/30 shadow-lg">
+                    <p class="text-brand-light-blue text-sm font-medium flex items-center justify-center space-x-2">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <span>هذا المنتج مقدم من "مجتمع ن8ن بالعربي"</span>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </p>
+                </div>
                 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 max-w-2xl w-full items-start">
-                    <button class="suggestion-card text-left p-4 sm:p-5 bg-brand-dark hover:bg-gray-800 border border-gray-800 hover:border-brand-orange rounded-xl transition-all duration-200 h-full">
-                        <i class="fas fa-lightbulb text-brand-orange mb-2 text-lg"></i>
-                        <p class="text-white text-sm sm:text-base font-medium">Tell me about B.A.S.E.</p>
-                    </button>
-                    <button class="suggestion-card text-left p-4 sm:p-5 bg-brand-dark hover:bg-gray-800 border border-gray-800 hover:border-brand-orange rounded-xl transition-all duration-200 h-full">
-                        <i class="fas fa-question-circle text-brand-orange mb-2 text-lg"></i>
-                        <p class="text-white text-sm sm:text-base font-medium">How can you assist me?</p>
-                    </button>
+                <div class="mb-8">
+                    <p class="text-white font-medium mb-3">هل أنت طالب جامعي أم خريج حديث؟</p>
+                    <div class="grid grid-cols-2 gap-6 max-w-md mx-auto">
+                        <div class="flex justify-center">
+                            <button id="student-btn" class="w-full px-6 py-4 bg-brand-navy-light/20 backdrop-blur-sm hover:bg-brand-navy-light/30 text-white rounded-xl font-medium transition-all duration-200 border border-brand-navy-light/30 hover:border-brand-navy-light/50 shadow-lg hover:shadow-xl transform hover:scale-105">
+                                <div class="flex flex-col items-center space-y-2">
+                                    <i class="fas fa-graduation-cap text-xl"></i>
+                                    <span>طالب جامعي</span>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="flex justify-center">
+                            <button id="graduate-btn" class="w-full px-6 py-4 bg-brand-light-blue/80 backdrop-blur-sm hover:bg-brand-light-blue text-brand-dark-navy rounded-xl font-medium transition-all duration-200 border border-brand-navy-light/30 hover:border-brand-navy shadow-lg hover:shadow-xl transform hover:scale-105">
+                                <div class="flex flex-col items-center space-y-2">
+                                    <i class="fas fa-briefcase text-xl"></i>
+                                    <span>خريج حديث</span>
+                                </div>
+                            </button>
+                        </div>
                     </div>
+                </div>
+                
+                <div id="suggestions-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl w-full items-start hidden">
+                    <!-- البوكسان المقترحان سيظهران هنا بناءً على اختيار المستخدم -->
+                </div>
             </div>
             
             <div id="messages-container" class="hidden py-4 sm:py-6 space-y-4 sm:space-y-6 max-w-3xl mx-auto">
@@ -307,26 +251,68 @@
         <footer class="px-4 sm:px-6 py-2 sm:py-3">
             <div class="max-w-2xl mx-auto">
                 <form id="chat-form" class="relative">
-                    <div class="flex items-center space-x-3 bg-brand-darker rounded-2xl border border-gray-800 focus-within:border-brand-orange transition-colors px-4 py-2 sm:px-5 sm:py-2.5">
+                    <div class="flex items-center space-x-3 bg-brand-light-blue rounded-2xl border border-gray-800 focus-within:border-brand-navy-light transition-colors px-4 py-2 sm:px-5 sm:py-2.5">
+                        <div class="flex items-center space-x-2">
+                            <input 
+                                type="file" 
+                                id="cv-upload" 
+                                accept=".pdf" 
+                                class="hidden"
+                            >
+                            <button 
+                                type="button"
+                                id="cv-upload-btn"
+                                class="bg-brand-navy/20 hover:bg-brand-navy/30 text-white p-2.5 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-brand-navy-light/30 hover:border-brand-navy-light/50 shadow-md hover:shadow-lg transform hover:scale-105"
+                                title="رفع سيرة ذاتية (PDF)"
+                            >
+                                <i class="fas fa-file-pdf text-lg"></i>
+                            </button>
+                            <div id="file-info" class="hidden text-xs text-white/80 max-w-[120px] truncate">
+                                <span id="file-name"></span>
+                            </div>
+                        </div>
                         <textarea 
                             id="message-input"
                             rows="1"
-                            placeholder="Message Wittie..."
+                            placeholder="اسأل مرشد عن مسارك المهني..."
                             autocomplete="off"
-                            class="flex-1 bg-transparent text-white placeholder-gray-500 py-1.5 px-1 resize-none focus:outline-none max-h-32 text-base leading-normal"
+                            class="flex-1 bg-transparent text-brand-dark-navy placeholder-gray-500 py-1.5 px-1 resize-none focus:outline-none max-h-32 text-base leading-normal"
                         ></textarea>
                         <button 
                             type="submit"
                             id="send-btn"
-                            class="bg-brand-orange text-white px-3 py-1 rounded-lg hover:bg-orange-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                            class="bg-brand-navy-light text-white font-semibold px-3 py-1 rounded-lg hover:bg-blue-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
                             disabled
                         >
                             <i class="fas fa-paper-plane text-lg"></i>
                         </button>
                     </div>
                     <p class="text-gray-500 text-xs mt-2 text-center hidden sm:block">
-                        Powered by AI • B.A.S.E. International
+                        مدعوم بالذكاء الاصطناعي • مرشدك المهني
                     </p>
+                    <div class="flex justify-center mt-2">
+                        <a 
+                            href="https://www.skool.com/n8n-with-huria-4282/about?ref=7aa0261b38464919ab28154488397fd6" 
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="inline-flex items-center space-x-1 text-gray-400 hover:text-white transition-colors text-xs"
+                            title="انضم إلى مجتمع ن8ن بالعربي"
+                        >
+                            <div class="flex items-center justify-center w-5 h-5">
+                                <div class="text-center leading-none">
+                                    <div class="text-[8px] font-bold">U8U</div>
+                                    <div class="text-[5px] opacity-80">مجتمع</div>
+                                </div>
+                            </div>
+                            <span>مجتمع ن8ن بالعربي</span>
+                            <i class="fas fa-external-link-alt text-xs"></i>
+                        </a>
+                    </div>
+                    <div class="text-center mt-2">
+                        <p class="text-gray-500 text-xs">
+                            منتج مقدّم من مجتمع ن8ن بالعربي
+                        </p>
+                    </div>
                 </form>
             </div>
         </footer>
@@ -334,10 +320,8 @@
     </div>
 
     <script>
-        // Initialize GSAP
         gsap.registerPlugin();
         
-        // DOM Elements
         const chatForm = document.getElementById('chat-form');
         const messageInput = document.getElementById('message-input');
         const sendBtn = document.getElementById('send-btn');
@@ -345,62 +329,136 @@
         const messagesContainer = document.getElementById('messages-container');
         const chatContainer = document.getElementById('chat-container');
         const newChatBtn = document.getElementById('new-chat-btn');
-        const suggestionCards = document.querySelectorAll('.suggestion-card');
+        const studentBtn = document.getElementById('student-btn');
+        const graduateBtn = document.getElementById('graduate-btn');
+        const suggestionsContainer = document.getElementById('suggestions-container');
+        const cvUpload = document.getElementById('cv-upload');
+        const cvUploadBtn = document.getElementById('cv-upload-btn');
+        const fileInfo = document.getElementById('file-info');
+        const fileName = document.getElementById('file-name');
         
-        // Loading state
         let isLoading = false;
+        let userType = null; // 'student' or 'graduate'
+        let uploadedFile = null;
         
-        // --- ADDED: RTL Detection Function ---
-        /**
-         * Checks if a string contains Arabic characters.
-         * @param {string} text - The text to check.
-         * @returns {boolean} - True if Arabic, false otherwise.
-         */
         const isArabic = (text) => {
             if (!text) return false;
-            // This regex checks for characters in the Arabic Unicode block
             const arabicRegex = /[\u0600-\u06FF]/;
             return arabicRegex.test(text);
         };
-        // --- END ADDED ---
 
-        // Generate or get session key
         function getSessionKey() {
             let sessionKey = localStorage.getItem('chatSessionKey');
             if (!sessionKey) {
-                // Generate a unique session key
                 sessionKey = 'session_' + Date.now() + '_' + Math.random().toString(36).substring(2, 15);
                 localStorage.setItem('chatSessionKey', sessionKey);
             }
             return sessionKey;
         }
-        
-        // Get session key on load (using let so it can be reassigned)
         let sessionKey = getSessionKey();
-        console.log('Session Key:', sessionKey); // Debug log
         
-        // Auto-resize textarea
+        // اقتراحات للطلاب
+        const studentSuggestions = [
+            { icon: 'fa-search', text: 'ابحث لي عن تدريب عملي (Internship)', color: 'navy' },
+            { icon: 'fa-graduation-cap', text: 'كيف أختار التخصص المناسب لي؟', color: 'navy-light' }
+        ];
+        
+        // اقتراحات للخريجين
+        const graduateSuggestions = [
+            { icon: 'fa-file-alt', text: 'ساعدني في كتابة سيرتي الذاتية', color: 'navy' },
+            { icon: 'fa-user-tie', text: 'جهّزني لمقابلة عمل', color: 'navy-light' }
+        ];
+        
+        function showSuggestions(type) {
+            userType = type;
+            const suggestions = type === 'student' ? studentSuggestions : graduateSuggestions;
+            
+            suggestionsContainer.innerHTML = '';
+            suggestions.forEach(suggestion => {
+                const button = document.createElement('button');
+                button.className = `suggestion-card text-center p-5 sm:p-6 bg-white/90 backdrop-blur-md hover:bg-white border-2 border-brand-navy-light/60 hover:border-brand-navy rounded-xl transition-all duration-200 h-full shadow-xl hover:shadow-2xl transform hover:scale-105`;
+                button.innerHTML = `
+                    <div class="flex flex-col items-center space-y-3">
+                        <div class="w-12 h-12 bg-brand-navy-light/20 rounded-full flex items-center justify-center">
+                            <i class="fas ${suggestion.icon} text-brand-navy text-xl"></i>
+                        </div>
+                        <p class="text-brand-dark-navy text-base sm:text-lg font-semibold text-center">${suggestion.text}</p>
+                    </div>
+                `;
+                
+                button.addEventListener('click', function() {
+                    const text = this.querySelector('p').textContent;
+                    messageInput.value = text;
+                    messageInput.style.height = 'auto';
+                    messageInput.style.height = messageInput.scrollHeight + 'px';
+                    sendBtn.disabled = false;
+                    messageInput.dispatchEvent(new Event('input'));
+                    messageInput.focus();
+                });
+                
+                suggestionsContainer.appendChild(button);
+            });
+            
+            suggestionsContainer.classList.remove('hidden');
+            gsap.from('.suggestion-card', { opacity: 0, y: 20, duration: 0.5, stagger: 0.05, ease: 'power2.out' });
+        }
+        
+        studentBtn.addEventListener('click', () => {
+            showSuggestions('student');
+            studentBtn.classList.add('bg-brand-navy-light/40', 'border-brand-navy-light/70', 'shadow-xl');
+            graduateBtn.classList.remove('bg-brand-light-blue', 'border-brand-navy');
+        });
+        
+        graduateBtn.addEventListener('click', () => {
+            showSuggestions('graduate');
+            graduateBtn.classList.add('bg-brand-light-blue', 'border-brand-navy', 'shadow-xl');
+            studentBtn.classList.remove('bg-brand-navy-light/40', 'border-brand-navy-light/70');
+        });
+        
+        // معالجة رفع ملفات PDF
+        cvUploadBtn.addEventListener('click', () => {
+            cvUpload.click();
+        });
+        
+        cvUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file && file.type === 'application/pdf') {
+                uploadedFile = file;
+                fileName.textContent = file.name;
+                fileInfo.classList.remove('hidden');
+                cvUploadBtn.classList.add('bg-brand-navy/50');
+                
+                // إضافة رسالة تلقائية لطلب المساعدة في السيرة الذاتية
+                if (!messageInput.value.trim()) {
+                    messageInput.value = "ساعدني في تحسين سيرتي الذاتية المرفقة";
+                    messageInput.style.height = 'auto';
+                    messageInput.style.height = messageInput.scrollHeight + 'px';
+                    sendBtn.disabled = false;
+                }
+            } else {
+                uploadedFile = null;
+                fileInfo.classList.add('hidden');
+                cvUploadBtn.classList.remove('bg-brand-navy/50');
+                if (e.target.files.length > 0) {
+                    alert('الرجاء رفع ملف PDF فقط');
+                }
+            }
+        });
+        
         messageInput.addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = Math.min(this.scrollHeight, 128) + 'px';
-            
-            // Enable/disable send button
             sendBtn.disabled = !this.value.trim();
-
-            // --- ADDED: RTL logic for textarea ---
             const text = this.value;
-            // Check the first non-space character to set direction
-            if (isArabic(text.trim().charAt(0))) {
+            if (isArabic(text.trim().charAt(0)) || text.trim().length === 0) {
                 this.style.direction = 'rtl';
                 this.style.textAlign = 'right';
             } else {
                 this.style.direction = 'ltr';
                 this.style.textAlign = 'left';
             }
-            // --- END ADDED ---
         });
         
-        // Handle Enter key (send on Enter, new line on Shift+Enter)
         messageInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -410,97 +468,59 @@
             }
         });
         
-        // Animate suggestion cards on load
-        gsap.from('.suggestion-card', {
-            opacity: 0,
-            y: 20,
-            duration: 0.5,
-            stagger: 0.05,
-            ease: 'power2.out'
-        });
-        
-        // Handle suggestion card clicks
-        suggestionCards.forEach(card => {
-            card.addEventListener('click', function() {
-                const text = this.querySelector('p').textContent;
-                messageInput.value = text;
-                messageInput.style.height = 'auto';
-                messageInput.style.height = messageInput.scrollHeight + 'px';
-                sendBtn.disabled = false;
-                
-                // --- ADDED: Trigger input event to check RTL ---
-                messageInput.dispatchEvent(new Event('input'));
-                // --- END ADDED ---
-                
-                messageInput.focus();
-            });
-        });
-        
-        // New chat button
         newChatBtn.addEventListener('click', function() {
-            // Generate new session key for new chat
             const newSessionKey = 'session_' + Date.now() + '_' + Math.random().toString(36).substring(2, 15);
             localStorage.setItem('chatSessionKey', newSessionKey);
             sessionKey = newSessionKey;
-            console.log('New Session Key:', sessionKey); // Debug log
             
-            // Clear messages
             messagesContainer.innerHTML = '';
             messagesContainer.classList.add('hidden');
             messagesContainer.style.display = 'none';
             
-            // Show empty state
             emptyState.classList.remove('hidden');
             emptyState.style.display = 'flex';
             
-            // Clear and reset input
             messageInput.value = '';
             messageInput.style.height = 'auto';
             messageInput.disabled = false;
             sendBtn.disabled = true;
-
-            // --- ADDED: Reset input direction ---
-            messageInput.style.direction = 'ltr';
-            messageInput.style.textAlign = 'left';
-            // --- END ADDED ---
+            messageInput.style.direction = 'rtl';
+            messageInput.style.textAlign = 'right';
             
-            // Reset loading state
+            userType = null;
+            suggestionsContainer.classList.add('hidden');
+            studentBtn.classList.remove('bg-brand-navy-light/40', 'border-brand-navy-light/70', 'shadow-xl');
+            graduateBtn.classList.remove('bg-brand-light-blue', 'border-brand-navy', 'shadow-xl');
+            
+            // إعادة تعيين حالة رفع الملف
+            uploadedFile = null;
+            fileInfo.classList.add('hidden');
+            cvUploadBtn.classList.remove('bg-brand-navy/50');
+            cvUpload.value = '';
+            
             isLoading = false;
-            
-            // Scroll to top
             chatContainer.scrollTop = 0;
             
-            // Re-animate the empty state
-            gsap.fromTo(emptyState, 
-                { opacity: 0, y: 20 },
-                { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }
-            );
+            gsap.fromTo(emptyState, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' });
         });
-        
-        // Add message function
+
         function addMessage(message, sender = 'user') {
-            console.log('addMessage called:', { message, sender }); // Debug log
-            
-            // Hide empty state on first message
             if (messagesContainer.classList.contains('hidden')) {
-                console.log('Showing messages container'); // Debug log
                 emptyState.classList.add('hidden');
                 messagesContainer.classList.remove('hidden');
-                emptyState.style.display = 'none'; // Force hide
-                messagesContainer.style.display = 'block'; // Force show
+                emptyState.style.display = 'none';
+                messagesContainer.style.display = 'block';
             }
             
             const messageDiv = document.createElement('div');
             messageDiv.className = `message-fade-in flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
             
-            // --- ADDED: Check direction ---
             const direction = isArabic(message) ? 'rtl' : 'ltr';
-            // --- END ADDED ---
 
             if (sender === 'user') {
                 messageDiv.innerHTML = `
                     <div class="flex items-start space-x-2 sm:space-x-3 max-w-[85%] sm:max-w-[75%]">
-                        <div class="bg-brand-orange text-white rounded-2xl rounded-tr-sm px-4 sm:px-5 py-2.5 sm:py-3 shadow-lg">
+                        <div class="bg-brand-light-blue text-brand-dark-navy rounded-2xl rounded-tr-sm px-4 sm:px-5 py-2.5 sm:py-3 shadow-lg">
                             <p class="text-sm sm:text-base whitespace-pre-wrap break-words ${direction}">${escapeHtml(message)}</p>
                         </div>
                         <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gray-700 flex items-center justify-center flex-shrink-0">
@@ -511,13 +531,10 @@
             } else {
                 messageDiv.innerHTML = `
                     <div class="flex items-start space-x-2 sm:space-x-3 max-w-[85%] sm:max-w-[75%]">
-                        <img 
-                            src="./assets/Wittie.jpeg" 
-                            alt="Wittie" 
-                            class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-brand-orange flex-shrink-0"
-                            onerror="this.src='https://placehold.co/32x32/F97316/FFFFFF?text=W'"
-                        >
-                        <div class="bg-brand-dark text-white rounded-2xl rounded-tl-sm px-4 sm:px-5 py-2.5 sm:py-3 border border-gray-800 shadow-lg">
+                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-navy-light flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-compass text-white text-xs sm:text-sm"></i>
+                        </div>
+                        <div class="bg-brand-light-blue text-brand-dark-navy rounded-2xl rounded-tl-sm px-4 sm:px-5 py-2.5 sm:py-3 border border-gray-800 shadow-lg">
                             <p class="text-sm sm:text-base whitespace-pre-wrap break-words ${direction}">${escapeHtml(message)}</p>
                         </div>
                     </div>
@@ -525,32 +542,20 @@
             }
             
             messagesContainer.appendChild(messageDiv);
-            console.log('Message appended to container'); // Debug log
             
-            // Simple opacity animation without GSAP (less likely to cause issues)
             messageDiv.style.opacity = '0';
             messageDiv.style.transform = 'translateY(10px)';
-            
-            // Use setTimeout to ensure the element is rendered before animating
             setTimeout(() => {
                 messageDiv.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
                 messageDiv.style.opacity = '1';
                 messageDiv.style.transform = 'translateY(0)';
             }, 10);
             
-            // Scroll to bottom
             scrollToBottom();
         }
 
-        // --- MODIFIED: Replaced streamBotReply function ---
-        /**
-         * Adds a bot message with a simulated typing effect.
-         * @param {string} message - The full message text to stream.
-         * @returns {Promise<void>} - A promise that resolves when streaming is complete.
-         */
         function streamBotReply(message) {
             return new Promise((resolve) => {
-                // Hide empty state
                 if (messagesContainer.classList.contains('hidden')) {
                     emptyState.classList.add('hidden');
                     messagesContainer.classList.remove('hidden');
@@ -560,19 +565,14 @@
 
                 const messageDiv = document.createElement('div');
                 messageDiv.className = `message-fade-in flex justify-start`;
-                
                 const direction = isArabic(message) ? 'rtl' : 'ltr';
 
-                // Create the message bubble with an empty <p> tag
                 messageDiv.innerHTML = `
                     <div class="flex items-start space-x-2 sm:space-x-3 max-w-[85%] sm:max-w-[75%]">
-                        <img 
-                            src="./assets/Wittie.jpeg" 
-                            alt="Wittie" 
-                            class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-brand-orange flex-shrink-0"
-                            onerror="this.src='https://placehold.co/32x32/F97316/FFFFFF?text=W'"
-                        >
-                        <div class="bg-brand-dark text-white rounded-2xl rounded-tl-sm px-4 sm:px-5 py-2.5 sm:py-3 border border-gray-800 shadow-lg">
+                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-navy-light flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-compass text-white text-xs sm:text-sm"></i>
+                        </div>
+                        <div class="bg-brand-light-blue text-brand-dark-navy rounded-2xl rounded-tl-sm px-4 sm:px-5 py-2.5 sm:py-3 border border-gray-800 shadow-lg">
                             <p class="text-sm sm:text-base whitespace-pre-wrap break-words ${direction}"></p>
                         </div>
                     </div>
@@ -580,37 +580,23 @@
                 
                 messagesContainer.appendChild(messageDiv);
                 
-                // Find the <p> tag we just created
                 const p = messageDiv.querySelector('p');
-                if (!p) {
-                    resolve();
-                    return;
-                }
+                if (!p) { resolve(); return; }
 
-                // --- THIS IS THE FIX ---
-                // We use the raw message string directly with .textContent
-                // .textContent automatically sanitizes text, so it is XSS-safe
-                // This avoids the double-escaping issue.
                 const rawText = message;
                 let index = 0;
-                const typingSpeed = 25; // Speed in ms
+                const typingSpeed = 10; // تم تقليل السرعة من 25 إلى 10 للحصول على كتابة أسرع 
 
                 function typeCharacter() {
                     if (index < rawText.length) {
                         p.textContent += rawText.charAt(index);
                         index++;
-                        scrollToBottom(); // Scroll as text is added
+                        scrollToBottom();
                         setTimeout(typeCharacter, typingSpeed);
-                    } else {
-                        resolve(); // Resolve the promise when typing is done
-                    }
+                    } else { resolve(); }
                 }
-                // --- END FIX ---
-
-                // Start the typing animation
                 typeCharacter();
 
-                // Animate the bubble appearance
                 messageDiv.style.opacity = '0';
                 messageDiv.style.transform = 'translateY(10px)';
                 setTimeout(() => {
@@ -620,26 +606,20 @@
                 }, 10);
             });
         }
-        // --- END MODIFIED ---
-        // --- END ADDED ---
         
-        // Add typing indicator
         function showTypingIndicator() {
             const typingDiv = document.createElement('div');
             typingDiv.id = 'typing-indicator';
             typingDiv.className = 'flex items-start space-x-2 sm:space-x-3';
             typingDiv.innerHTML = `
-                <img 
-                    src="./assets/Wittie.jpeg" 
-                    alt="Wittie" 
-                    class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-brand-orange flex-shrink-0"
-                    onerror="this.src='https://placehold.co/32x32/F97316/FFFFFF?text=W'"
-                >
-                <div class="bg-brand-dark rounded-2xl rounded-tl-sm px-5 sm:px-6 py-3 sm:py-4 border border-gray-800">
+                <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-navy-light flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-compass text-white text-xs sm:text-sm"></i>
+                </div>
+                <div class="bg-brand-light-blue rounded-2xl rounded-tl-sm px-5 sm:px-6 py-3 sm:py-4 border border-gray-800">
                     <div class="flex space-x-1.5">
-                        <div class="w-2 h-2 bg-gray-500 rounded-full typing-dot"></div>
-                        <div class="w-2 h-2 bg-gray-500 rounded-full typing-dot"></div>
-                        <div class="w-2 h-2 bg-gray-500 rounded-full typing-dot"></div>
+                        <div class="w-2 h-2 bg-brand-dark-navy rounded-full typing-dot"></div>
+                        <div class="w-2 h-2 bg-brand-dark-navy rounded-full typing-dot"></div>
+                        <div class="w-2 h-2 bg-brand-dark-navy rounded-full typing-dot"></div>
                     </div>
                 </div>
             `;
@@ -648,337 +628,171 @@
             scrollToBottom();
         }
         
-        // Remove typing indicator
         function hideTypingIndicator() {
             const typingIndicator = document.getElementById('typing-indicator');
-            if (typingIndicator) {
-                typingIndicator.remove();
-            }
+            if (typingIndicator) { typingIndicator.remove(); }
         }
         
-        // Scroll to bottom smoothly
         function scrollToBottom() {
-            gsap.to(chatContainer, {
-                scrollTop: chatContainer.scrollHeight,
-                duration: 0.5,
-                ease: 'power2.out'
-            });
+            gsap.to(chatContainer, { scrollTop: chatContainer.scrollHeight, duration: 0.5, ease: 'power2.out' });
         }
         
-        // Clean output text from formatting characters
         function cleanText(text) {
             if (!text) return '';
-            
-            // Convert to string if not already
             text = String(text);
-            
-            // Remove escape characters and special formatting
             text = text
-                // Remove escape sequences like \n, \r, \t, \\
-                .replace(/\\n/g, '\n')  // Convert \n to actual newlines
-                .replace(/\\r/g, '')     // Remove carriage returns
-                .replace(/\\t/g, ' ')    // Convert tabs to spaces
-                .replace(/\\\\/g, '')    // Remove escaped backslashes
-                .replace(/\\"/g, '"')    // Convert escaped quotes to regular quotes
-                .replace(/\\'/g, "'")    // Convert escaped single quotes
-                
-                // Remove markdown asterisks (bold/italic)
-                .replace(/\*\*\*/g, '')  // Remove triple asterisks
-                .replace(/\*\*/g, '')    // Remove double asterisks (bold)
-                .replace(/\*/g, '')      // Remove single asterisks (italic)
-                
-                // Remove other common formatting characters
-                .replace(/_{2,}/g, '')   // Remove multiple underscores
-                .replace(/`{1,3}/g, '')  // Remove backticks (code blocks)
-                .replace(/~/g, '')       // Remove tildes
-                
-                // Clean up extra whitespace
-                .replace(/[ \t]+/g, ' ') // Multiple spaces/tabs to single space
-                .trim();                 // Trim leading/trailing whitespace
-            
+                .replace(/\\n/g, '\n').replace(/\\r/g, '').replace(/\\t/g, ' ')
+                .replace(/\\\\/g, '').replace(/\\"/g, '"').replace(/\\'/g, "'")
+                .replace(/\*\*\*/g, '').replace(/\*\*/g, '').replace(/\*/g, '')
+                .replace(/_{2,}/g, '').replace(/`{1,3}/g, '').replace(/~/g, '')
+                .replace(/[ \t]+/g, ' ').trim();
             return text;
         }
         
-        // Escape HTML to prevent XSS
         function escapeHtml(text) {
             if (!text) return '';
-            // Convert to string if it's not already
             text = String(text);
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
             return text.replace(/[&<>"']/g, m => map[m]);
         }
         
-        // Handle form submission
         chatForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             const userMessage = messageInput.value.trim();
-            if (!userMessage) return;
+            if (!userMessage || isLoading) return;
             
-            // Prevent sending while loading
-            if (isLoading) {
-                console.log('Already loading, please wait...'); // Debug log
-                return;
-            }
-            
-            // Set loading state
             isLoading = true;
             
-            // Add user message
+            // إذا كان هناك ملف مرفوع، أضف معلومات عنه في الرسالة
+            let messageToSend = userMessage;
+            if (uploadedFile) {
+                messageToSend += `\n[ملف مرفق: ${uploadedFile.name}]`;
+            }
+            
             addMessage(userMessage, 'user');
             
-            // Clear input and disable
             messageInput.value = '';
             messageInput.style.height = 'auto';
             messageInput.disabled = true;
             sendBtn.disabled = true;
-
-            // --- ADDED: Reset input direction after send ---
-            messageInput.style.direction = 'ltr';
-            messageInput.style.textAlign = 'left';
-            // --- END ADDED ---
+            messageInput.style.direction = 'rtl';
+            messageInput.style.textAlign = 'right';
             
-            // Show typing indicator
             showTypingIndicator();
             
-            // Send to n8n webhook
-            const webhookUrl = 'https://hrobotna.app.n8n.cloud/webhook/test';
+            const webhookUrl = 'https://hrobotna.app.n8n.cloud/webhook/5a9f5f90-9669-45ad-ad7c-3360943e0c08';
             
             try {
+                const formData = new FormData();
+                formData.append('message', messageToSend);
+                formData.append('sessionKey', sessionKey);
+                formData.append('userType', userType || 'unknown');
+                
+                if (uploadedFile) {
+                    formData.append('cvFile', uploadedFile);
+                }
+                
                 const response = await fetch(webhookUrl, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ 
-                        message: userMessage,
-                        sessionKey: sessionKey
-                    })
+                    body: formData
                 });
                 
-                // Check if response is ok
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); }
                 
-                // Get response as text first
                 const responseText = await response.text();
-                console.log('Webhook response (text):', responseText); // Debug log
-                
                 let botReply = responseText;
                 
-                // Try to parse as JSON if possible
                 try {
                     const data = JSON.parse(responseText);
-                    console.log('Parsed as JSON:', data); // Debug log
-                    
-                    // n8n often returns an array, get the first item
-                    let jsonData = data;
-                    if (Array.isArray(data) && data.length > 0) {
-                        jsonData = data[0];
-                    }
-                    
-                    // Try different possible response formats from n8n
+                    let jsonData = Array.isArray(data) && data.length > 0 ? data[0] : data;
                     botReply = jsonData.output || jsonData.reply || jsonData.response || jsonData.text || jsonData.result || jsonData.message || responseText;
-                } catch (jsonError) {
-                    // If not JSON, use the text response directly
-                    console.log('Response is plain text, not JSON'); // Debug log
-                    botReply = responseText;
-                }
+                } catch (jsonError) { botReply = responseText; }
                 
-                // Hide typing indicator
                 hideTypingIndicator();
                 
-                // --- MODIFIED: Use streaming function ---
                 if (botReply && botReply.trim()) {
                     const cleanedReply = cleanText(botReply);
-                    console.log('Cleaned reply:', cleanedReply); // Debug log
-                    
-                    // This will now wait for the typing to finish
                     await streamBotReply(cleanedReply); 
                 } else {
-                    console.warn('Empty response received');
                     addMessage('I received your message but got an empty response.', 'bot');
                 }
-                // --- END MODIFIED ---
                 
             } catch (error) {
                 console.error('Error:', error);
                 hideTypingIndicator();
                 addMessage('Sorry, I am having trouble connecting. Please try again later.', 'bot');
             } finally {
-                // Reset loading state and re-enable input
-                // This now correctly waits for `await streamBotReply` to finish
                 isLoading = false;
                 messageInput.disabled = false;
+                
+                // إعادة تعيين حالة رفع الملف
+                if (uploadedFile) {
+                    uploadedFile = null;
+                    fileInfo.classList.add('hidden');
+                    cvUploadBtn.classList.remove('bg-brand-navy/50');
+                    cvUpload.value = '';
+                }
+                
                 messageInput.focus();
             }
         });
         
-        // Initial animations
-        gsap.from('#empty-state', {
-            opacity: 0,
-            y: 30,
-            duration: 0.8,
-            ease: 'power2.out'
-        });
+        gsap.from('#empty-state', { opacity: 0, y: 30, duration: 0.8, ease: 'power2.out' });
+        gsap.from('header', { y: -100, opacity: 0, duration: 0.6, ease: 'power3.out' });
+        gsap.from('footer', { y: 100, opacity: 0, duration: 0.6, ease: 'power3.out', delay: 0.2 });
         
-        // Animate header on load
-        gsap.from('header', {
-            y: -100,
-            opacity: 0,
-            duration: 0.6,
-            ease: 'power3.out'
-        });
+        newChatBtn.addEventListener('mouseenter', () => gsap.to(newChatBtn, { scale: 1.1, rotation: 90, duration: 0.3, ease: 'back.out' }));
+        newChatBtn.addEventListener('mouseleave', () => gsap.to(newChatBtn, { scale: 1, rotation: 0, duration: 0.3, ease: 'back.out' }));
+        sendBtn.addEventListener('mouseenter', () => { if (!sendBtn.disabled) gsap.to(sendBtn.querySelector('i'), { x: -3, duration: 0.3, ease: 'power2.out' }); });
+        sendBtn.addEventListener('mouseleave', () => gsap.to(sendBtn.querySelector('i'), { x: 0, duration: 0.3, ease: 'power2.out' }));
         
-        // Animate footer on load
-        gsap.from('footer', {
-            y: 100,
-            opacity: 0,
-            duration: 0.6,
-            ease: 'power3.out',
-            delay: 0.2
-        });
+        studentBtn.addEventListener('mouseenter', () => gsap.to(studentBtn, { scale: 1.05, duration: 0.2, ease: 'power2.out' }));
+        studentBtn.addEventListener('mouseleave', () => gsap.to(studentBtn, { scale: 1, duration: 0.2, ease: 'power2.out' }));
+        graduateBtn.addEventListener('mouseenter', () => gsap.to(graduateBtn, { scale: 1.05, duration: 0.2, ease: 'power2.out' }));
+        graduateBtn.addEventListener('mouseleave', () => gsap.to(graduateBtn, { scale: 1, duration: 0.2, ease: 'power2.out' }));
         
-        // Animate new chat button on hover
-        newChatBtn.addEventListener('mouseenter', () => {
-            gsap.to(newChatBtn, {
-                scale: 1.1,
-                rotation: 90,
-                duration: 0.3,
-                ease: 'back.out'
-            });
-        });
-        
-        newChatBtn.addEventListener('mouseleave', () => {
-            gsap.to(newChatBtn, {
-                scale: 1,
-                rotation: 0,
-                duration: 0.3,
-                ease: 'back.out'
-            });
-        });
-        
-        // Animate send button on hover
-        sendBtn.addEventListener('mouseenter', () => {
-            if (!sendBtn.disabled) {
-                gsap.to(sendBtn.querySelector('i'), {
-                    x: 3,
-                    duration: 0.3,
-                    ease: 'power2.out'
-                });
-            }
-        });
-        
-        sendBtn.addEventListener('mouseleave', () => {
-            gsap.to(sendBtn.querySelector('i'), {
-                x: 0,
-                duration: 0.3,
-                ease: 'power2.out'
-            });
-        });
-        
-        // Create floating particles
+        messageInput.addEventListener('focus', () => gsap.to(messageInput.parentElement, { scale: 1.01, duration: 0.2, ease: 'power2.out' }));
+        messageInput.addEventListener('blur', () => gsap.to(messageInput.parentElement, { scale: 1, duration: 0.2, ease: 'power2.out' }));
+
         function createParticles() {
-            const particleContainer = document.querySelector('.animated-bg');
-            const particleCount = 40; // Increased from 20
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 10 + 's';
-                particle.style.animationDuration = (8 + Math.random() * 7) + 's'; // Faster: 8-15s instead of 15-25s
-                particleContainer.appendChild(particle);
+            const container = document.querySelector('.animated-bg');
+            for (let i = 0; i < 40; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.animationDelay = Math.random() * 10 + 's';
+                p.style.animationDuration = (8 + Math.random() * 7) + 's';
+                container.appendChild(p);
             }
         }
-        
-        // Create floating circles
         function createFloatingCircles() {
-            const particleContainer = document.querySelector('.animated-bg');
-            const circleCount = 8;
-            
-            for (let i = 0; i < circleCount; i++) {
-                const circle = document.createElement('div');
-                circle.className = 'float-circle';
+            const container = document.querySelector('.animated-bg');
+            for (let i = 0; i < 8; i++) {
+                const c = document.createElement('div');
+                c.className = 'float-circle';
                 const size = 50 + Math.random() * 150;
-                circle.style.width = size + 'px';
-                circle.style.height = size + 'px';
-                circle.style.left = Math.random() * 100 + '%';
-                circle.style.top = Math.random() * 100 + '%';
-                circle.style.animationDelay = Math.random() * 15 + 's';
-                circle.style.animationDuration = (12 + Math.random() * 10) + 's'; // Faster: 12-22s instead of 20-35s
-                particleContainer.appendChild(circle);
+                c.style.width = size + 'px'; c.style.height = size + 'px';
+                c.style.left = Math.random() * 100 + '%'; c.style.top = Math.random() * 100 + '%';
+                c.style.animationDelay = Math.random() * 15 + 's';
+                c.style.animationDuration = (12 + Math.random() * 10) + 's';
+                container.appendChild(c);
             }
         }
-        
-        // Create glowing dots
         function createGlowingDots() {
-            const particleContainer = document.querySelector('.animated-bg');
-            const dotCount = 15;
-            
-            for (let i = 0; i < dotCount; i++) {
-                const dot = document.createElement('div');
-                dot.className = 'glow-dot';
-                dot.style.left = Math.random() * 100 + '%';
-                dot.style.top = Math.random() * 100 + '%';
-                dot.style.animationDelay = Math.random() * 2 + 's';
-                dot.style.animationDuration = (1.5 + Math.random() * 2) + 's'; // Faster: 1.5-3.5s instead of 2-5s
-                particleContainer.appendChild(dot);
+            const container = document.querySelector('.animated-bg');
+            for (let i = 0; i < 15; i++) {
+                const d = document.createElement('div');
+                d.className = 'glow-dot';
+                d.style.left = Math.random() * 100 + '%'; d.style.top = Math.random() * 100 + '%';
+                d.style.animationDelay = Math.random() * 2 + 's';
+                d.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+                container.appendChild(d);
             }
         }
         
-        // Initialize all background animations
         createParticles();
         createFloatingCircles();
         createGlowingDots();
-        
-        // Pulse animation for suggestion cards on hover
-        document.querySelectorAll('.suggestion-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                gsap.to(this, {
-                    scale: 1.02,
-                    duration: 0.3,
-                    ease: 'power2.out'
-                });
-                gsap.to(this.querySelector('i'), {
-                    rotation: 360,
-                    duration: 0.5,
-                    ease: 'power2.inOut'
-                });
-            });
-            
-            card.addEventListener('mouseleave', function() {
-                gsap.to(this, {
-                    scale: 1,
-                    duration: 0.3,
-                    ease: 'power2.out'
-                });
-            });
-        });
-        
-        // Smooth focus animation for textarea
-        messageInput.addEventListener('focus', () => {
-            gsap.to(messageInput.parentElement, {
-                scale: 1.01,
-                duration: 0.2,
-                ease: 'power2.out'
-            });
-        });
-        
-        messageInput.addEventListener('blur', () => {
-            gsap.to(messageInput.parentElement, {
-                scale: 1,
-                duration: 0.2,
-                ease: 'power2.out'
-            });
-        });
     </script>
 
 </body>
